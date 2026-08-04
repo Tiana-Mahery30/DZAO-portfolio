@@ -50,11 +50,22 @@ nav {
   text-decoration: none;
   cursor: pointer;
   transition: color 0.2s;
+  position: relative;
 }
 
-.nav-link:hover {
-  color: var(--purple);
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--purple);
+  transition: width 0.3s ease;
 }
+
+.nav-link:hover { color: var(--purple); }
+.nav-link:hover::after { width: 100%; }
 
 /* ── HERO ── */
 .hero {
@@ -79,6 +90,8 @@ nav {
   color: #595959;
   display: block;
   line-height: 1;
+  animation: fadeSlideUp 0.6s ease both;
+  animation-delay: 0.25s;
 }
 
 .hero-name-first {
@@ -87,6 +100,8 @@ nav {
   color: var(--purple);
   display: block;
   line-height: 1.1;
+  animation: fadeSlideUp 0.6s ease both;
+  animation-delay: 0.4s;
 }
 
 .hero-role {
@@ -96,6 +111,8 @@ nav {
   font-size: 2em;
   color: #555;
   margin-bottom: 40px;
+  animation: fadeSlideUp 0.6s ease both;
+  animation-delay: 0.55s;
 }
 
 .hero-dot {
@@ -112,6 +129,8 @@ nav {
   line-height: 1.75;
   max-width: 420px;
   margin-bottom: 40px;
+  animation: fadeSlideUp 0.6s ease both;
+  animation-delay: 0.7s;
 }
 
 .btn-portfolio {
@@ -126,9 +145,10 @@ nav {
   border-radius: 999px;
   text-decoration: none;
   width: fit-content;
-  transition: opacity 0.3s;
   background-color: #555;
   transition: all 0.3s ease;
+  animation: fadeSlideUp 0.6s ease both;
+  animation-delay: 0.85s;
 }
 
 .btn-portfolio:hover {
@@ -150,14 +170,25 @@ nav {
 .hero-image {
   width: 700px;
   height: 700px;
+  animation: scaleIn 0.9s ease both;
+  animation-delay: 0.3s;
 }
 
+/* ── TRANSITION TEXT ── */
 .transition-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.transition-text.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .first-text {
@@ -184,6 +215,47 @@ nav {
   text-align: center;
 }
 
+/* ── TYPEWRITER ── */
+.typewriter-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #555;
+}
+
+/* ══════════════════════════════════════════
+   KEYFRAMES
+   ══════════════════════════════════════════ */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.93); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes cursorBlink {
+  0%, 100% { border-color: #555; }
+  50%       { border-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
+}
+
+/* Logo animation */
+.logo {
+  animation: fadeSlideUp 0.6s ease both;
+  animation-delay: 0.1s;
+}
+
 /* ── BURGER (caché sur desktop) ── */
 .burger {
   display: none;
@@ -208,7 +280,6 @@ nav {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Animation burger → croix */
 .burger-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .burger-active span:nth-child(2) { opacity: 0; }
 .burger-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -267,7 +338,6 @@ nav {
 
   .container { margin: 10px; }
 
-  /* Header : logo + burger sur la même ligne */
   header {
     flex-direction: row;
     align-items: center;
@@ -278,10 +348,8 @@ nav {
 
   .logo { font-size: 1.4rem; }
 
-  /* Burger visible */
   .burger { display: flex; }
 
-  /* Nav cachée par défaut, s'ouvre en dropdown */
   nav {
     display: none;
     flex-direction: column;
@@ -297,9 +365,7 @@ nav {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
 
-  nav.nav-open {
-    display: flex;
-  }
+  nav.nav-open { display: flex; }
 
   .nav-link {
     width: 100%;
@@ -308,18 +374,14 @@ nav {
     border-bottom: 1px solid #e0e0e0;
   }
 
-  .nav-link:last-child {
-    border-bottom: none;
-  }
+  .nav-link:last-child { border-bottom: none; }
 
-  /* Hero */
   .hero { padding: 28px 16px 40px; gap: 28px; }
   .hero-name-last  { font-size: 2.8em; }
   .hero-name-first { font-size: 2rem; }
   .hero-role       { font-size: 1.1em; margin-bottom: 12px; }
   .hero-bio        { font-size: 0.92rem; margin-bottom: 20px; max-width: 100%; }
 
-  /* Transition text */
   .first-text  { font-size: 2em;   text-align: center; }
   .second-text { font-size: 2rem;  text-align: center; }
   .text        { font-size: 0.92em; max-width: 95%; }
