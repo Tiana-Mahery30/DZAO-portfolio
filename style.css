@@ -238,9 +238,13 @@ nav {
 }
 
 .typewriter {
+  display: inline-block;
   overflow: hidden;
   white-space: nowrap;
   border-right: 2px solid #555;
+  line-height: 1.2;
+  min-height: 1.2em; /* évite l'effondrement vertical quand le texte est vide */
+  vertical-align: middle;
 }
 
 /* ══════════════════════════════════════════
@@ -385,20 +389,14 @@ nav {
   display: block;
   flex-shrink: 0;
   border-radius: 12px;
-  cursor: pointer;
   opacity: 0;
   transform: translateX(-40px);
-  transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.7s ease;
+  transition: transform 0.7s ease, opacity 0.7s ease;
 }
 
 .img-dzao.about-revealed {
   opacity: 1;
   transform: translateX(0);
-}
-
-
-.img-dzao.about-revealed:hover {
-  transform: translateX(0) scale(1.02);
 }
 
 .about-text {
@@ -838,7 +836,6 @@ textarea:focus {
 
   .img-dzao { width: 100%; max-width: 400px; height: auto; transform: translateY(-30px); }
   .img-dzao.about-revealed { transform: translateY(0); }
-  .img-dzao.about-revealed:hover { transform: translateY(0) scale(1.02); }
   .about-text { width: 100%; transform: translateY(30px); }
   .about-text.about-revealed { transform: translateY(0); }
   .about-name { font-size: 5em; }

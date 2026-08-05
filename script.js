@@ -12,6 +12,37 @@ const SPEED_DELETE = 50;   // ms par caractère à l'effacement
 const PAUSE_FULL   = 2000; // pause quand le mot est complet
 const PAUSE_EMPTY  = 400;  // pause avant d'écrire le mot suivant
 
+// Réserve l'espace nécessaire sur le conteneur (.hero-role) pour le mot le
+// plus long, afin que rien ne bouge horizontalement — sans figer la largeur
+// du texte lui-même, pour que le curseur reste collé à la fin du mot affiché.
+function lockTypewriterWidth() {
+  const measurer = document.createElement('span');
+  measurer.style.position   = 'absolute';
+  measurer.style.visibility = 'hidden';
+  measurer.style.whiteSpace = 'nowrap';
+  measurer.style.font       = getComputedStyle(el).font;
+  document.body.appendChild(measurer);
+
+  let maxWidth = 0;
+  words.forEach(word => {
+    measurer.textContent = word;
+    maxWidth = Math.max(maxWidth, measurer.offsetWidth);
+  });
+
+  document.body.removeChild(measurer);
+
+  const heroRole = el.closest('.hero-role');
+  const dot       = document.querySelector('.hero-dot');
+  const rowStyles = getComputedStyle(heroRole);
+  const gap       = parseFloat(rowStyles.columnGap || rowStyles.gap) || 0;
+  const dotWidth  = dot ? dot.offsetWidth : 0;
+
+  heroRole.style.minWidth = (dotWidth + gap + maxWidth) + 'px';
+}
+
+lockTypewriterWidth();
+window.addEventListener('resize', lockTypewriterWidth);
+
 function tick() {
   const word    = words[wordIndex];
   const visible = word.slice(0, charIndex);
