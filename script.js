@@ -93,7 +93,22 @@ nav.querySelectorAll('.nav-link').forEach(link => {
 });
 
 /* ══════════════════════════════════
-   4. BACK TO TOP
+   4. VIEW PORTFOLIO — scroll fluide vers les réalisations
+   ══════════════════════════════════ */
+const viewPortfolioBtn = document.getElementById('viewPortfolioBtn');
+
+if (viewPortfolioBtn) {
+  viewPortfolioBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(viewPortfolioBtn.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
+/* ══════════════════════════════════
+   5. BACK TO TOP
    ══════════════════════════════════ */
 const backToTop = document.getElementById('backToTop');
 
@@ -108,3 +123,55 @@ window.addEventListener('scroll', () => {
 backToTop.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+/* ══════════════════════════════════
+   6. SCROLL REVEAL EN CASCADE — galerie & services
+   ══════════════════════════════════ */
+function staggerReveal(containerSelector, itemSelector, revealClass, staggerMs = 120) {
+  const container = document.querySelector(containerSelector);
+  if (!container) return;
+
+  const items = container.querySelectorAll(itemSelector);
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        items.forEach((item, i) => {
+          setTimeout(() => item.classList.add(revealClass), i * staggerMs);
+        });
+        observer.disconnect();
+      }
+    },
+    { threshold: 0.15 }
+  );
+
+  observer.observe(container);
+}
+
+staggerReveal(
+  '.box-container',
+  '.child-image1, .child-image2, .child-image3, .child-image4, .child-image5, .child-image6',
+  'img-revealed'
+);
+
+staggerReveal('.skills-container', '.skills-flex', 'card-revealed');
+
+/* ══════════════════════════════════
+   7. SCROLL REVEAL — section À propos
+   ══════════════════════════════════ */
+const aboutImg  = document.querySelector('.img-dzao');
+const aboutText = document.querySelector('.about-text');
+
+if (aboutImg && aboutText) {
+  const aboutObserver = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        aboutImg.classList.add('about-revealed');
+        setTimeout(() => aboutText.classList.add('about-revealed'), 150);
+        aboutObserver.disconnect();
+      }
+    },
+    { threshold: 0.2 }
+  );
+  aboutObserver.observe(document.querySelector('.about-container'));
+}

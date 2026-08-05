@@ -299,8 +299,22 @@ nav {
 .child-image5,
 .child-image6 {
   display: block; /* fix 2 */
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  --reveal-y: 30px;
+  --hover-scale: 1;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.6s ease;
   cursor: pointer;
+  opacity: 0;
+  transform: translateY(var(--reveal-y)) scale(var(--hover-scale));
+}
+
+.child-image1.img-revealed,
+.child-image2.img-revealed,
+.child-image3.img-revealed,
+.child-image4.img-revealed,
+.child-image5.img-revealed,
+.child-image6.img-revealed {
+  opacity: 1;
+  --reveal-y: 0px;
 }
 
 .child-image1:hover,
@@ -309,7 +323,7 @@ nav {
 .child-image4:hover,
 .child-image5:hover,
 .child-image6:hover {
-  transform: scale(1.015);
+  --hover-scale: 1.015;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
   z-index: 5;
 }
@@ -371,6 +385,24 @@ nav {
   display: block;
   flex-shrink: 0;
   border-radius: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.7s ease;
+}
+
+.img-dzao.about-revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.img-dzao:hover {
+  transform: scale(1.02);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.img-dzao.about-revealed:hover {
+  transform: translateX(0) scale(1.02);
 }
 
 .about-text {
@@ -381,6 +413,14 @@ nav {
   width: 60%;
   gap: 20px;
   margin-top: 50px;
+  opacity: 0;
+  transform: translateX(40px);
+  transition: transform 0.7s ease, opacity 0.7s ease;
+}
+
+.about-text.about-revealed {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .about-name {
@@ -480,6 +520,14 @@ nav {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.skills-flex.card-revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .skills {
@@ -792,8 +840,11 @@ textarea:focus {
     min-height: auto;
   }
 
-  .img-dzao { width: 100%; max-width: 400px; height: auto; }
-  .about-text { width: 100%; }
+  .img-dzao { width: 100%; max-width: 400px; height: auto; transform: translateY(-30px); }
+  .img-dzao.about-revealed { transform: translateY(0); }
+  .img-dzao.about-revealed:hover { transform: translateY(0) scale(1.02); }
+  .about-text { width: 100%; transform: translateY(30px); }
+  .about-text.about-revealed { transform: translateY(0); }
   .about-name { font-size: 5em; }
 
   /* box2 : la hauteur en % ne fonctionne plus une fois empilé en colonne auto */
@@ -849,20 +900,30 @@ textarea:focus {
   .second-text { font-size: 2rem;  text-align: center; }
   .text        { font-size: 0.92em; max-width: 95%; }
 
-  .box-container { padding: 8px; gap: 8px; }
-  .box1, .box2   { gap: 8px; }
-  .child-box1, .child-box2 { gap: 8px; }
+  /* galerie réalisations mobile : grille masonry 2 colonnes */
+  .box-container {
+    display: block;
+    column-count: 2;
+    column-gap: 10px;
+    padding: 10px;
+  }
 
-  .child-box1    { flex-direction: column; align-items: center; }
+  .box1, .box2, .child-box1, .child-box2 {
+    display: contents; /* les wrappers disparaissent du flux, les images deviennent des items de colonne directs */
+  }
+
   .child-image1,
-  .child-image2  { width: 90%; }
-
-  .child-box2    { flex-direction: column; align-items: center; }
+  .child-image2,
   .child-image3,
-  .child-image4  { width: 90%; }
-
+  .child-image4,
   .child-image5,
-  .child-image6  { width: 90%; }
+  .child-image6 {
+    width: 100%;
+    height: auto;
+    display: inline-block;
+    margin-bottom: 10px;
+    break-inside: avoid;
+  }
 
   /* about mobile */
   .about-container { padding: 28px 16px; gap: 24px; }
