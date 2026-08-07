@@ -206,3 +206,142 @@ if (aboutImg && aboutText) {
   );
   aboutObserver.observe(document.querySelector('.about-container'));
 }
+
+/* ══════════════════════════════════
+   8. FORMULAIRE DE CONTACT — EmailJS
+   ══════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────
+   1) IDENTIFIANTS EMAILJS — à remplacer par tes propres valeurs
+   (Dashboard EmailJS : https://dashboard.emailjs.com/)
+   ───────────────────────────────────────────────────────────── */
+const EMAILJS_PUBLIC_KEY  = 'nCtQHysOv9hWInBC6';   // Account > General > Public Key
+const EMAILJS_SERVICE_ID  = 'service_38dzzm3';   // Email Services > Service ID
+const EMAILJS_TEMPLATE_ID = 'template_ru1er8z';  // Email Templates > Template ID
+
+/* Initialisation du SDK EmailJS avec la clé publique */
+(function initEmailJS() {
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  } else {
+    console.error('EmailJS SDK non chargé : vérifie que le script CDN est bien inclus dans le HTML.');
+  }
+})();
+
+const contactForm   = document.getElementById('contactForm');
+const submitBtn     = document.getElementById('submitBtn');
+const formStatusEl  = document.getElementById('formStatus');
+const successModal      = document.getElementById('successModal');
+const successModalText  = document.getElementById('successModalText');
+const successModalClose = document.getElementById('successModalClose');
+
+/* Affiche un message de statut (uniquement les erreurs — le succès passe par la popup) */
+function showFormStatus(message, type) {
+  if (!formStatusEl) return;
+  formStatusEl.textContent = message;
+  formStatusEl.style.color      = type === 'success' ? '#2e7d32' : '#c0392b';
+  formStatusEl.style.fontSize   = '0.85rem';
+  formStatusEl.style.fontWeight = '500';
+  formStatusEl.style.margin     = '0';
+}
+
+/* Ouvre / ferme la popup de confirmation d'envoi */
+function showSuccessModal(message) {
+  if (!successModal) return;
+  if (successModalText && message) successModalText.textContent = message;
+  successModal.classList.add('show');
+  successModal.setAttribute('aria-hidden', 'false');
+}
+
+function hideSuccessModal() {
+  if (!successModal) return;
+  successModal.classList.remove('show');
+  successModal.setAttribute('aria-hidden', 'true');
+}
+
+if (successModalClose) successModalClose.addEventListener('click', hideSuccessModal);
+if (successModal) {
+  // ferme la popup si on clique en dehors de la boîte
+  successModal.addEventListener('click', (e) => {
+    if (e.target === successModal) hideSuccessModal();
+  });
+}
+
+/* Active / désactive le bouton "Get a solution" pendant l'envoi (flèche remplacée par un spinner) */
+function setSubmitLoading(isLoading) {
+  if (!submitBtn) return;
+  if (isLoading) {
+    submitBtn.dataset.loading = 'true';
+    submitBtn.classList.add('is-loading');
+    submitBtn.style.pointerEvents = 'none';   // désactive le clic (c'est un <a>, pas de "disabled" natif)
+    submitBtn.style.opacity       = '0.75';
+  } else {
+    submitBtn.dataset.loading = 'false';
+    submitBtn.classList.remove('is-loading');
+    submitBtn.style.pointerEvents = '';
+    submitBtn.style.opacity       = '';
+  }
+}
+
+/* Vérifie que tous les champs obligatoires sont remplis */
+function validateContactForm(data) {
+  if (!data.name.trim())    return 'Merci de renseigner votre nom.';
+  if (!data.email.trim())   return 'Merci de renseigner votre e-mail.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return "L'adresse e-mail n'est pas valide.";
+  if (!data.industry.trim())return 'Merci de sélectionner une industrie.';
+  if (!data.message.trim()) return 'Merci de renseigner votre message.';
+  return null; // pas d'erreur
+}
+
+if (contactForm && submitBtn) {
+  contactForm.addEventListener('submit', handleContactSubmit);
+  // Le bouton est un <a> (pas de type="submit"), donc on gère aussi le clic directement
+  submitBtn.addEventListener('click', handleContactSubmit);
+}
+
+function handleContactSubmit(e) {
+  e.preventDefault(); // empêche le rechargement de la page
+
+  if (submitBtn.dataset.loading === 'true') return; // évite les doubles envois
+
+  const formData = {
+    name:     document.getElementById('name').value,
+    email:    document.getElementById('email').value,
+    industry: document.getElementById('industry').value,
+    message:  document.getElementById('message').value,
+  };
+
+  const validationError = validateContactForm(formData);
+  if (validationError) {
+    showFormStatus(validationError, 'error');
+    return;
+  }
+
+  setSubmitLoading(true);
+  showFormStatus('', 'success'); // efface un ancien message d'erreur éventuel
+
+  /* Paramètres envoyés au template EmailJS.
+     Les noms ci-dessous doivent correspondre aux variables {{...}} utilisées
+     dans le template EmailJS (dashboard > Email Templates). */
+  const templateParams = {
+    name:     formData.name,
+    email:    formData.email,
+    industry: formData.industry,
+    message:  formData.message,
+    to_email: 'tiana.mahery526@gmail.com', // destinataire — à renseigner aussi dans "To Email" du template EmailJS
+  };
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+    .then(() => {
+      showSuccessModal('Votre message a bien été envoyé. Merci !');
+      contactForm.reset();
+    })
+    .catch((error) => {
+      // error.status et error.text contiennent le motif exact renvoyé par l'API EmailJS
+      console.error('Erreur EmailJS — status:', error?.status, '| détail:', error?.text || error);
+      showFormStatus("Une erreur est survenue lors de l'envoi. Merci de réessayer.", 'error');
+    })
+    .finally(() => {
+      setSubmitLoading(false);
+    });
+}

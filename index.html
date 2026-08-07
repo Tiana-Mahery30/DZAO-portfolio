@@ -68,7 +68,7 @@
 </div>
 
 
-<div class="transition-text" id="realisation">
+<div class="transition-text">
   <span class="first-text">Créer du beau. </span>
   <span class="second-text">Générer de l'impact</span>
   <div class="text">
@@ -104,7 +104,7 @@
     <p>
       Avec plus de 10 ans d'expérience, j'ai travaillé sur des projets variés en e-commerce, branding, retouche photo, création de contenus digitaux, campagnes marketing et support print.
     </p>
-    <p class="span-about" style="color: white"><b>Ce qui me différencie ?</b></p>
+    <p class="span-about"><b>Ce qui me différencie ?</b></p>
     <p>Ma capacité a allier créativité, maîtrise technique et compréhension des enjeux marketing pour concevoir des visuels esthétiques, stratégiques et orientés résultats.</p>
   </div>
 </div>
@@ -182,9 +182,9 @@
 
 <div class="formulaire-container" id="contact">
   <div class="aside">
-    <span>BOOSTEZ VOS PERFOMANCES</span><br>
-    <h1><b>Des solutions</b> chimiques adaptées à votre activité</h1>
-    <span>Nous développons des solutions fiables, performantes et personnalisées pour accompagner votre croissance. <br><br> Demandez votre solution sur mesure.</span>
+    <span>WE'RE HERE TO HELP YOU</span><br>
+    <h1><b>Discuss</b> Your <br> Chemical <br> Solution Needs</h1>
+    <span>Are you looking for top quality chemical solutions tailored to your needs ? <br> Reach out to us.</span>
     <br><br>
     <div class="flex-contact">
       <div>
@@ -204,7 +204,7 @@
     </div>
   </div>
 
-  <div class="formulaire">
+  <form class="formulaire" id="contactForm" novalidate>
     <p>
       <label for="name">Name</label>
       <input type="text" id="name" name="name" placeholder="Tiana Mahery">
@@ -224,14 +224,34 @@
       <label for="message">Message</label>
       <textarea id="message" name="message" placeholder="Type your message ..."></textarea>
     </p>
-    <a class="btn-portfolio btn-valider" href="#">
+
+    <!-- Zone d'affichage des messages d'erreur uniquement (le succès s'affiche en popup) -->
+    <p id="formStatus" role="status" aria-live="polite"></p>
+
+    <a href="#" class="btn-portfolio btn-valider" id="submitBtn">
       <span class="arrow-circle">
           <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="btn-spinner"></span>
       </span>
       Get a solution
     </a>
+  </form>
+</div>
+
+<!-- Popup de confirmation d'envoi -->
+<div class="success-modal" id="successModal" aria-hidden="true">
+  <div class="success-modal-box">
+    <div class="success-modal-icon">
+      <span class="material-symbols-outlined">check</span>
+    </div>
+    <h3 class="success-modal-title">Message envoyé !</h3>
+    <p class="success-modal-text" id="successModalText">Votre message a bien été envoyé. Merci !</p>
+    <button type="button" class="btn-portfolio success-modal-close" id="successModalClose">Fermer</button>
   </div>
 </div>
+
+<!-- SDK officiel EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <button class="back-to-top" id="backToTop" aria-label="Retour en haut">
   <span class="material-symbols-outlined">arrow_upward</span>
